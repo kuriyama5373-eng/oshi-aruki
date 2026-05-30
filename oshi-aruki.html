@@ -455,21 +455,23 @@ body{
 </head>
 <body>
 
-<!-- CONSENT -->
+<!-- REGISTER -->
 <div id="consent">
   <div class="consent-box">
-    <div class="consent-icon">💜</div>
+    <div class="consent-icon">👟</div>
     <h2>推し歩きへようこそ！</h2>
-    <p>はじめる前にひとつだけ確認させてください🌸</p>
+    <p>会社のメールアドレスで登録してはじめよう🌸</p>
     <ul class="consent-items">
       <li>入力した歩数データがチームの健康活動として記録されます</li>
       <li>管理者はチーム全員の歩数データを確認できます</li>
-      <li>データはこのブラウザのローカルストレージに保存されます</li>
-      <li>個人を特定する情報は自分でつけた名前のみです</li>
+      <li>@keisapo.com のアカウントのみ登録できます</li>
     </ul>
-    <p class="consent-note">「同意して始める」を押すとすべての機能が使えます🎉</p>
-    <button class="btn-agree" onclick="giveConsent()">💜 同意して始める</button>
-    <button class="btn-skip" onclick="skipConsent()">とりあえず見るだけ（一部制限あり）</button>
+    <input id="regName" type="text" placeholder="名前（例：栗山）" maxlength="10"
+      style="width:100%;padding:11px 14px;margin-bottom:8px;border:2px solid #EDE0F8;border-radius:12px;font-family:'Zen Maru Gothic',sans-serif;font-size:.95rem;outline:none;box-sizing:border-box;">
+    <input id="regEmail" type="email" placeholder="メールアドレス（@keisapo.com）"
+      style="width:100%;padding:11px 14px;margin-bottom:14px;border:2px solid #EDE0F8;border-radius:12px;font-family:'Zen Maru Gothic',sans-serif;font-size:.95rem;outline:none;box-sizing:border-box;">
+    <button class="btn-agree" onclick="doRegister()" id="regBtn">💜 登録して始める</button>
+    <p id="regMsg" style="font-size:.75rem;color:#E85A8A;margin-top:8px;min-height:18px;"></p>
   </div>
 </div>
 
@@ -581,8 +583,8 @@ body{
 <div id="page-admin" class="wrap" style="display:none">
   <div class="sec">⚙️ 管理者ビュー</div>
   <div class="card" id="adminLoginCard">
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">管理者パスワードを入力</p>
-    <input class="admin-pw-input" id="adminPw" type="password" placeholder="パスワード">
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">管理者のメールアドレスを入力</p>
+    <input class="admin-pw-input" id="adminPw" type="email" placeholder="kuriyama5373@keisapo.com">
     <button class="btn-submit" onclick="adminLogin()">ログイン</button>
   </div>
   <div style="display:none" id="adminPanel">
@@ -608,14 +610,18 @@ body{
 <div class="toast" id="toast"></div>
 
 <script>
-/* ══════════ STATE ══════════ */
-const ADMIN_PW = '19930517';
+/* ══════════ CONFIG ══════════ */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbydRDBzwyrrRvFni7tqcMefUF3hVkLLCxF3bu_MPTlO0mivApbxl2uaqiHWFp5ycuDFDg/exec';
+const ADMIN_EMAIL_CONST = 'kuriyama5373@keisapo.com';
 
-let S = JSON.parse(localStorage.getItem('oshiAruki')||'null') || {
-  consented:false,
+/* ══════════ STATE ══════════ */
+let S = JSON.parse(localStorage.getItem('oshiArukiV3')||'null') || {
+  registered:false,
+  email:'',
+  userName:'',
   charType:'animal',
   oshiName:'',
-  customImg:null,   // base64
+  customImg:null,
   totalExp:0,
   history:[]
 };
@@ -710,20 +716,36 @@ function getCharInfo(){
   return CHARS[S.charType][l-1];
 }
 
-/* ══════════ CONSENT ══════════ */
-function giveConsent(){
-  S.consented=true; save();
-  document.getElementById('consent').style.display='none';
-  showToast('ようこそ！推し歩きへ💜');
-}
-function skipConsent(){
-  document.getElementById('consent').style.display='none';
-  showToast('一部機能が制限されます');
+/* ══════════ REGISTER ══════════ */
+async function doRegister(){
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const msg = document.getElementById('regMsg');
+  const btn = document.getElementById('regBtn');
+
+  if(!name){ msg.textContent='名前を入力してください'; return; }
+  if(!email.endsWith('@keisapo.com')){ msg.textContent='@keisapo.com のアドレスを入力してください'; return; }
+
+  btn.textContent='登録中...'; btn.disabled=true;
+  try {
+    const r = await fetch(GAS_URL, {method:'POST', body: JSON.stringify({action:'register', name, email})});
+    const d = await r.json();
+    if(d.ok){
+      S.registered=true; S.email=email; S.userName=d.name; save();
+      document.getElementById('consent').style.display='none';
+      showToast(`ようこそ！${d.name}さん💜`);
+    } else {
+      msg.textContent = d.message || 'エラーが発生しました';
+    }
+  } catch(e){
+    msg.textContent='通信エラーです。もう一度お試しください';
+  }
+  btn.textContent='💜 登録して始める'; btn.disabled=false;
 }
 
 /* ══════════ SUBMIT ══════════ */
 function submit(){
-  if(!S.consented){showToast('先に同意をお願いします');return;}
+  if(!S.registered){showToast('先に登録をお願いします');return;}
   const steps=parseInt(document.getElementById('stepsInput').value)||0;
   if(steps<0){showToast('正しい歩数を入力してね');return;}
 
@@ -738,6 +760,15 @@ function submit(){
   const ds=`${now.getMonth()+1}/${now.getDate()}(${['日','月','火','水','木','金','土'][now.getDay()]})`;
   S.history.push({date:ds,steps,num,numName:f.name,exp:gained});
   save();
+
+  // GASに送信
+  if(S.registered && S.email){
+    fetch(GAS_URL, {method:'POST', body: JSON.stringify({
+      action:'submitSteps', email:S.email,
+      steps, exp:gained, totalExp:S.totalExp, lv:newLv,
+      charName:S.oshiName||'推しコ', date:ds
+    })}).catch(()=>{});
+  }
 
   // cheer text
   const ci=getCharInfo();
@@ -897,18 +928,37 @@ function clearAll(){
 }
 
 /* ══════════ ADMIN ══════════ */
-function adminLogin(){
-  if(document.getElementById('adminPw').value!==ADMIN_PW){showToast('パスワードが違います');return;}
-  document.getElementById('adminLoginCard').style.display='none';
-  document.getElementById('adminPanel').style.display='block';
-  const rows=[...S.history].reverse().slice(0,50).map(h=>`
-    <tr><td>${h.date}</td><td>${h.steps.toLocaleString()}</td>
-    <td class="td-num">${h.num}</td><td>${h.numName}</td>
-    <td style="color:var(--mint);font-weight:700">+${h.exp}</td></tr>`).join('');
-  document.getElementById('adminTableWrap').innerHTML=rows?`
-    <table class="admin-table">
-      <thead><tr><th>日付</th><th>歩数</th><th>数秘</th><th>ナンバー</th><th>EXP</th></tr></thead>
-      <tbody>${rows}</tbody></table>`:
+async function adminLogin(){
+  const email = document.getElementById('adminPw').value.trim().toLowerCase();
+  if(email !== ADMIN_EMAIL_CONST){ showToast('管理者のメールアドレスを入力してください'); return; }
+  const btn = document.querySelector('#adminLoginCard .btn-submit');
+  btn.textContent='読み込み中...'; btn.disabled=true;
+  try {
+    const r = await fetch(GAS_URL, {method:'POST', body: JSON.stringify({action:'getAdmin', email})});
+    const d = await r.json();
+    if(d.ok){
+      document.getElementById('adminLoginCard').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+      renderAdminTable(d.steps);
+    } else {
+      showToast(d.message||'エラーです');
+    }
+  } catch(e){ showToast('通信エラーです'); }
+  btn.textContent='ログイン'; btn.disabled=false;
+}
+function renderAdminTable(steps){
+  const rows = [...steps].reverse().slice(0,100).map(r=>`
+    <tr>
+      <td>${r[7]||''}</td>
+      <td>${r[1]||''}</td>
+      <td>${r[2]||''}</td>
+      <td style="font-weight:900">${Number(r[3]||0).toLocaleString()}</td>
+      <td style="color:var(--mint);font-weight:700">Lv.${r[6]||1}</td>
+    </tr>`).join('');
+  document.getElementById('adminTableWrap').innerHTML = rows ?
+    `<table class="admin-table">
+      <thead><tr><th>日付</th><th>メール</th><th>推しコ</th><th>歩数</th><th>Lv</th></tr></thead>
+      <tbody>${rows}</tbody></table>` :
     '<p style="text-align:center;color:var(--muted);padding:20px">データなし</p>';
 }
 function adminLogout(){
@@ -967,12 +1017,12 @@ function makeBubbles(){
     c.appendChild(d);
   }
 }
-function save(){ localStorage.setItem('oshiAruki',JSON.stringify(S)); }
+function save(){ localStorage.setItem('oshiArukiV3',JSON.stringify(S)); }
 
 /* ══════════ INIT ══════════ */
 makeBubbles();
 renderOshi();
-if(S.consented) document.getElementById('consent').style.display='none';
+if(S.registered) document.getElementById('consent').style.display='none';
 // restore type tab
 ['animal','plant','custom'].forEach((t,i)=>{
   if(t===S.charType){
