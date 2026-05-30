@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>推し歩き ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF5FB;
+  --card:#FFFFFF;
+  --pink:#FF6B9D;
+  --pink-l:#FFE4F0;
+  --pink-ll:#FFF0F7;
+  --mint:#3ECFB2;
+  --mint-l:#D8F8F2;
+  --yellow:#FFD166;
+  --yellow-l:#FFF8E1;
+  --purple:#A78BFA;
+  --purple-l:#EDE9FE;
+  --ink:#2D2640;
+  --muted:#9B8FAE;
+  --cream:#F9F3FF;
+  --r:20px;
+  --sh:0 4px 24px rgba(45,38,64,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Zen Maru Gothic',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── CONSENT ── */
+#consent{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(45,38,64,.85);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.consent-box{
+  background:white;border-radius:28px;
+  padding:32px 26px;max-width:360px;width:100%;
+  text-align:center;
+  box-shadow:0 24px 64px rgba(45,38,64,.3);
+}
+.consent-icon{font-size:2.8rem;margin-bottom:10px;}
+.consent-box h2{
+  font-size:1.4rem;font-weight:900;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:8px;
+}
+.consent-box p{font-size:.82rem;color:var(--muted);line-height:1.8;margin-bottom:10px;}
+.consent-items{
+  background:var(--cream);border-radius:14px;
+  padding:14px 16px;margin:12px 0;text-align:left;
+}
+.consent-items li{
+  list-style:none;font-size:.78rem;color:var(--ink);
+  padding:3px 0 3px 1.4em;position:relative;line-height:1.7;
+}
+.consent-items li::before{content:'💜';position:absolute;left:0;font-size:.6rem;top:.35em;}
+.consent-note{font-size:.7rem;color:#C4B8D4;margin-bottom:18px;line-height:1.7;}
+.btn-agree{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  border:none;border-radius:14px;color:white;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.95rem;font-weight:900;
+  cursor:pointer;letter-spacing:.05em;
+  box-shadow:0 6px 18px rgba(167,139,250,.4);
+  transition:transform .2s;
+}
+.btn-agree:hover{transform:translateY(-2px);}
+.btn-skip{
+  width:100%;padding:9px;margin-top:8px;
+  background:transparent;border:1.5px solid #DDD0EC;
+  border-radius:12px;color:var(--muted);
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.8rem;
+  cursor:pointer;transition:all .2s;
+}
+.btn-skip:hover{border-color:var(--purple);color:var(--purple);}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#FF6B9D 0%,#C77DFF 60%,#6ECCE8 100%);
+  padding:24px 20px 48px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.header-bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.bubble{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.12);
+  animation:floatB var(--d,6s) ease-in-out infinite alternate;
+}
+@keyframes floatB{from{transform:translateY(0)}to{transform:translateY(-16px)}}
+.header::after{
+  content:'';position:absolute;bottom:-24px;left:0;right:0;
+  height:48px;background:var(--bg);
+  border-radius:50% 50% 0 0/100% 100% 0 0;
+}
+.header-title{
+  font-family:'Nunito',sans-serif;
+  font-size:2.1rem;font-weight:900;color:white;
+  letter-spacing:.05em;
+  text-shadow:0 2px 12px rgba(45,38,64,.2);
+  position:relative;z-index:1;
+}
+.header-sub{
+  color:rgba(255,255,255,.8);font-size:.8rem;
+  margin-top:4px;letter-spacing:.1em;
+  position:relative;z-index:1;
+}
+
+/* ── MAIN ── */
+.wrap{max-width:440px;margin:0 auto;padding:0 16px 80px;}
+
+/* ── SEC LABEL ── */
+.sec{
+  font-size:.68rem;font-weight:900;letter-spacing:.2em;
+  color:var(--muted);text-transform:uppercase;
+  margin:28px 0 10px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec::after{content:'';flex:1;height:1.5px;background:linear-gradient(90deg,var(--pink-l),transparent);}
+
+/* ── CARD ── */
+.card{
+  background:var(--card);border-radius:var(--r);
+  padding:20px;box-shadow:var(--sh);margin-bottom:14px;
+}
+
+/* ══ OSHI CARD ══ */
+.oshi-card{
+  background:var(--card);border-radius:28px;
+  padding:0;box-shadow:var(--sh);margin-bottom:14px;
+  overflow:hidden;
+  border:2.5px solid var(--pink-l);
+}
+.oshi-top{
+  background:linear-gradient(160deg,var(--pink-ll),var(--purple-l));
+  padding:24px 20px 20px;
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+}
+/* type selector */
+.type-tabs{display:flex;gap:6px;margin-bottom:18px;width:100%;}
+.type-tab{
+  flex:1;padding:8px 4px;
+  border:2px solid #EDE0F8;border-radius:12px;
+  background:white;cursor:pointer;text-align:center;
+  font-family:'Zen Maru Gothic',sans-serif;
+  font-size:.72rem;font-weight:700;color:var(--muted);
+  transition:all .18s;
+}
+.type-tab.active{border-color:var(--pink);background:var(--pink-l);color:var(--pink);}
+.type-tab .te{font-size:1.3rem;display:block;margin-bottom:1px;}
+
+/* avatar area */
+.avatar-area{
+  width:120px;height:120px;
+  position:relative;cursor:pointer;margin-bottom:10px;
+}
+.avatar-ring{
+  position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(var(--pink),var(--purple),var(--mint),var(--yellow),var(--pink));
+  animation:spinRing 5s linear infinite;
+}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+.avatar-inner{
+  position:absolute;inset:4px;border-radius:50%;
+  background:white;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  font-size:3.6rem;
+}
+.avatar-img{
+  width:100%;height:100%;
+  object-fit:cover;border-radius:50%;
+  display:none;
+}
+.avatar-emoji{line-height:1;transition:all .5s cubic-bezier(.34,1.56,.64,1);}
+.avatar-upload-hint{
+  position:absolute;bottom:-4px;right:-4px;
+  background:var(--pink);color:white;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;box-shadow:0 2px 8px rgba(255,107,157,.4);
+  transition:transform .2s;
+}
+.avatar-area:hover .avatar-upload-hint{transform:scale(1.15);}
+#imgUpload{display:none;}
+
+.oshi-name-input{
+  background:rgba(255,255,255,.7);
+  border:2px solid rgba(255,107,157,.25);
+  border-radius:12px;padding:10px 14px;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:1rem;font-weight:700;
+  color:var(--ink);text-align:center;width:100%;
+  outline:none;transition:border-color .2s;
+}
+.oshi-name-input:focus{border-color:var(--pink);background:white;}
+
+/* EXP */
+.exp-section{padding:16px 20px 18px;}
+.lv-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.lv-badge{
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:white;font-size:.72rem;font-weight:900;
+  padding:3px 14px;border-radius:99px;
+  box-shadow:0 3px 10px rgba(255,107,157,.3);
+  letter-spacing:.04em;
+}
+.lv-label{font-size:.78rem;color:var(--muted);}
+.exp-bar-bg{height:10px;background:var(--cream);border-radius:99px;overflow:hidden;margin-bottom:4px;}
+.exp-bar-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--pink),var(--purple));
+  transition:width .9s cubic-bezier(.34,1.56,.64,1);
+}
+.exp-nums{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);}
+
+/* ── cheer bubble from oshi ── */
+.cheer-bubble{
+  background:white;
+  border:2px solid var(--pink-l);
+  border-radius:18px 18px 18px 4px;
+  padding:12px 16px;
+  font-size:.84rem;line-height:1.7;
+  color:var(--ink);
+  margin:0 20px 16px;
+  box-shadow:0 2px 12px rgba(255,107,157,.1);
+  position:relative;min-height:56px;
+}
+.cheer-bubble::before{
+  content:'';position:absolute;bottom:100%;left:20px;
+  border:8px solid transparent;
+  border-bottom-color:var(--pink-l);
+  margin-bottom:-2px;
+}
+.cheer-bubble .cheer-inner{
+  opacity:0;transition:opacity .4s;
+}
+.cheer-bubble .cheer-inner.visible{opacity:1;}
+
+/* ── STEPS INPUT ── */
+.steps-card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--sh);margin-bottom:14px;}
+.steps-row{display:flex;gap:10px;align-items:stretch;}
+.steps-input{
+  flex:1;padding:16px;
+  border:2.5px solid var(--pink-l);border-radius:14px;
+  font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;
+  color:var(--ink);text-align:center;
+  background:var(--pink-ll);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.steps-input:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,107,157,.12);}
+.steps-unit{
+  align-self:flex-end;
+  font-size:.8rem;color:var(--muted);font-weight:700;padding-bottom:18px;
+}
+.health-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:0 14px;
+  background:var(--mint-l);border:2px solid var(--mint);
+  border-radius:14px;cursor:pointer;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.68rem;font-weight:700;
+  color:var(--mint);white-space:nowrap;transition:all .2s;
+}
+.health-btn:hover{background:var(--mint);color:white;}
+.health-btn span{font-size:1.3rem;}
+.btn-submit{
+  width:100%;padding:15px;margin-top:12px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  border:none;border-radius:14px;
+  font-family:'Zen Maru Gothic',sans-serif;
+  font-size:1rem;font-weight:900;color:white;letter-spacing:.06em;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(255,107,157,.35);
+  transition:all .2s;
+}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,107,157,.4);}
+.btn-submit:active{transform:translateY(0);}
+
+/* ── NUMEROLOGY RESULT ── */
+.num-result{display:none;animation:fadeUp .5s ease both;}
+.num-result.show{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.num-header{
+  background:linear-gradient(135deg,#2D2640,#4A3F6B);
+  border-radius:22px;padding:24px 20px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.num-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.num-star{
+  position:absolute;border-radius:50%;background:white;
+  animation:tw var(--d,3s) ease-in-out infinite;
+}
+@keyframes tw{0%,100%{opacity:.1}50%{opacity:.75}}
+.num-badge-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;}
+.num-circle{
+  width:72px;height:72px;border-radius:50%;
+  background:conic-gradient(var(--yellow),#fff8,var(--yellow));
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  box-shadow:0 0 24px rgba(255,209,102,.5);
+  flex-shrink:0;
+}
+.num-circle::before{
+  content:'';position:absolute;inset:4px;
+  border-radius:50%;background:#2D2640;
+}
+.num-big{
+  font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;
+  color:var(--yellow);position:relative;z-index:1;
+}
+.num-name-wrap{}
+.num-name{
+  font-family:'Nunito',sans-serif;
+  font-size:1.1rem;font-weight:900;color:var(--yellow);
+  letter-spacing:.08em;
+}
+.num-tagline{font-size:.75rem;color:rgba(255,255,255,.55);margin-top:2px;letter-spacing:.06em;}
+
+/* oshi speaks the fortune */
+.fortune-from-oshi{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,209,102,.2);
+  border-radius:16px;padding:16px;
+  margin-top:4px;
+}
+.axis-row{margin-bottom:12px;}
+.axis-row:last-child{margin-bottom:0;}
+.axis-head{
+  display:flex;align-items:center;gap:6px;
+  font-size:.65rem;font-weight:900;letter-spacing:.18em;
+  color:var(--yellow);text-transform:uppercase;margin-bottom:6px;
+}
+.axis-bubble{
+  background:rgba(255,255,255,.08);
+  border-radius:14px;padding:11px 14px;
+  font-size:.83rem;line-height:1.8;
+  color:rgba(255,255,255,.85);
+}
+.axis-kw{
+  display:inline-block;
+  background:rgba(255,209,102,.18);
+  color:var(--yellow);
+  padding:1px 8px;border-radius:6px;
+  font-size:.72rem;font-weight:700;margin:2px 2px 0;
+}
+
+/* ── SHARE ── */
+.share-card{background:white;border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:14px;}
+.share-area{
+  width:100%;padding:12px;
+  border:1.5px dashed var(--pink-l);
+  border-radius:12px;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.8rem;
+  color:var(--ink);line-height:1.7;
+  background:var(--pink-ll);resize:none;outline:none;
+}
+.btn-copy{
+  width:100%;padding:12px;margin-top:8px;
+  border:2.5px solid var(--pink);border-radius:12px;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.88rem;font-weight:900;
+  color:var(--pink);background:white;cursor:pointer;
+  transition:all .2s;
+}
+.btn-copy:hover{background:var(--pink);color:white;}
+.btn-copy.copied{background:var(--mint);border-color:var(--mint);color:white;}
+
+/* ── HISTORY ── */
+.hist-item{
+  background:white;border-radius:16px;
+  padding:13px 14px;margin-bottom:8px;
+  box-shadow:0 2px 10px rgba(45,38,64,.06);
+  display:flex;align-items:center;gap:12px;
+  border:1.5px solid var(--pink-l);
+}
+.hist-num{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:white;
+  font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.hist-steps{font-size:1rem;font-weight:900;}
+.hist-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
+.hist-exp{font-size:.75rem;color:var(--mint);font-weight:700;white-space:nowrap;}
+.hist-empty{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 0;}
+
+/* ── ADMIN ── */
+.admin-pw-input{
+  width:100%;padding:12px 14px;margin-bottom:10px;
+  border:2px solid var(--pink-l);border-radius:12px;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.95rem;
+  color:var(--ink);background:white;outline:none;
+  transition:border-color .2s;
+}
+.admin-pw-input:focus{border-color:var(--pink);}
+.admin-table{width:100%;border-collapse:collapse;font-size:.79rem;}
+.admin-table th{
+  background:linear-gradient(135deg,#2D2640,#4A3F6B);
+  color:var(--yellow);padding:10px 12px;text-align:left;font-weight:900;white-space:nowrap;
+}
+.admin-table td{padding:9px 12px;border-bottom:1.5px solid var(--pink-ll);vertical-align:middle;}
+.admin-table tr:hover td{background:var(--pink-ll);}
+.td-num{
+  text-align:center;
+  font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;
+  color:var(--purple);
+}
+
+/* ── BOTTOM NAV ── */
+.bot-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:white;
+  border-top:1.5px solid var(--pink-l);
+  display:flex;padding:8px 0 env(safe-area-inset-bottom);
+  z-index:50;box-shadow:0 -4px 20px rgba(255,107,157,.1);
+}
+.bot-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  border:none;background:transparent;
+  font-family:'Zen Maru Gothic',sans-serif;font-size:.65rem;font-weight:700;
+  color:var(--muted);cursor:pointer;padding:6px 0;
+  transition:color .2s;
+}
+.bot-btn.active{color:var(--pink);}
+.bot-btn .bi{font-size:1.4rem;}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:74px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--ink);color:white;
+  padding:10px 22px;border-radius:99px;
+  font-size:.82rem;font-weight:700;
+  opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── SPARKLE ── */
+.spkl-wrap{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden;}
+.spkl{position:absolute;font-size:1.4rem;animation:spklAnim 1.4s ease forwards;}
+@keyframes spklAnim{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-130px) scale(.3)}}
+@keyframes lvUp{0%{transform:scale(1)}50%{transform:scale(1.5) rotate(-8deg)}100%{transform:scale(1)}}
+.lv-anim{animation:lvUp .65s ease;}
+</style>
+</head>
+<body>
+
+<!-- CONSENT -->
+<div id="consent">
+  <div class="consent-box">
+    <div class="consent-icon">💜</div>
+    <h2>推し歩きへようこそ！</h2>
+    <p>はじめる前にひとつだけ確認させてください🌸</p>
+    <ul class="consent-items">
+      <li>入力した歩数データがチームの健康活動として記録されます</li>
+      <li>管理者はチーム全員の歩数データを確認できます</li>
+      <li>データはこのブラウザのローカルストレージに保存されます</li>
+      <li>個人を特定する情報は自分でつけた名前のみです</li>
+    </ul>
+    <p class="consent-note">「同意して始める」を押すとすべての機能が使えます🎉</p>
+    <button class="btn-agree" onclick="giveConsent()">💜 同意して始める</button>
+    <button class="btn-skip" onclick="skipConsent()">とりあえず見るだけ（一部制限あり）</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-bubbles" id="headerBubbles"></div>
+  <div class="header-title">👟 推し歩き</div>
+  <div class="header-sub">歩いて推しを育てよう！✨</div>
+</div>
+
+<!-- PAGES -->
+<div id="page-home" class="wrap" style="display:block">
+
+  <!-- ===== OSHI CARD ===== -->
+  <div class="sec">💜 わたしの推しコ</div>
+
+  <div class="oshi-card">
+    <div class="oshi-top">
+      <!-- type selector -->
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="setType('animal',this)"><span class="te">🐾</span>どうぶつ</button>
+        <button class="type-tab" onclick="setType('plant',this)"><span class="te">🌿</span>しょくぶつ</button>
+        <button class="type-tab" onclick="setType('custom',this)"><span class="te">📸</span>カスタム</button>
+      </div>
+
+      <!-- avatar -->
+      <div class="avatar-area" onclick="handleAvatarClick()">
+        <div class="avatar-ring"></div>
+        <div class="avatar-inner">
+          <img id="customImg" class="avatar-img" alt="推しこ">
+          <span id="oshiEmoji" class="avatar-emoji">🥚</span>
+        </div>
+        <div class="avatar-upload-hint" id="uploadHint" style="display:none">📷</div>
+      </div>
+      <input type="file" id="imgUpload" accept="image/*" onchange="handleImgUpload(event)">
+
+      <!-- name -->
+      <input class="oshi-name-input" id="oshiName" type="text" placeholder="推しコの名前をつけてね"
+        maxlength="12" oninput="updateOshiName()" style="margin-top:10px;">
+    </div>
+
+    <!-- EXP -->
+    <div class="exp-section">
+      <div class="lv-row">
+        <div class="lv-badge" id="lvBadge">Lv.1 たまご</div>
+        <div class="lv-label" id="expLabel">0 / 100 EXP</div>
+      </div>
+      <div class="exp-bar-bg"><div class="exp-bar-fill" id="expFill" style="width:0%"></div></div>
+      <div class="exp-nums">
+        <span>累計EXP: <b id="totalExpNum">0</b></span>
+        <span id="nextLvLabel">次のLvまで: 100</span>
+      </div>
+    </div>
+
+    <!-- cheer bubble -->
+    <div class="cheer-bubble">
+      <div class="cheer-inner" id="cheerText">
+        歩数を入力すると、ここに推しコからのメッセージが届くよ🌸
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEPS INPUT ===== -->
+  <div class="sec">📱 今日の歩数</div>
+  <div class="steps-card">
+    <div class="steps-row">
+      <input class="steps-input" id="stepsInput" type="number" placeholder="0" min="0" max="99999">
+      <div class="steps-unit">歩</div>
+      <button class="health-btn" onclick="openHealth()">
+        <span>📲</span>ヘルスケア<br>を開く
+      </button>
+    </div>
+    <p style="font-size:.74rem;color:var(--muted);margin-top:6px;text-align:center;">
+      iPhoneヘルスケアの「歩数」をそのまま入力してね
+    </p>
+    <button class="btn-submit" onclick="submit()">💜 歩数登録で推しからのメッセージを見る</button>
+  </div>
+
+  <!-- ===== NUMEROLOGY RESULT ===== -->
+  <div class="num-result" id="numResult">
+    <div class="num-header">
+      <div class="num-stars" id="numStars"></div>
+      <div class="num-badge-row">
+        <div class="num-circle"><div class="num-big" id="resNum"></div></div>
+        <div class="num-name-wrap">
+          <div class="num-name" id="resName"></div>
+          <div class="num-tagline" id="resTagline"></div>
+        </div>
+      </div>
+      <div class="fortune-from-oshi" id="resAxes"></div>
+    </div>
+
+    <!-- share -->
+    <div class="share-card">
+      <div class="sec" style="margin-top:0">💬 チャットワークに貼ろう</div>
+      <textarea class="share-area" id="shareText" rows="7" readonly></textarea>
+      <button class="btn-copy" id="copyBtn" onclick="doCopy()">📋 コピーする</button>
+    </div>
+  </div>
+
+</div><!-- /home -->
+
+<div id="page-history" class="wrap" style="display:none">
+  <div class="sec">📖 歩みのきろく</div>
+  <div id="histList"><div class="hist-empty">まだ記録なし👣<br>歩数を登録してみよう！</div></div>
+  <button class="btn-submit" style="background:linear-gradient(135deg,#C77DFF,#A78BFA);box-shadow:0 6px 20px rgba(167,139,250,.35)" onclick="clearAll()">🗑️ リセット</button>
+</div>
+
+<div id="page-admin" class="wrap" style="display:none">
+  <div class="sec">⚙️ 管理者ビュー</div>
+  <div class="card" id="adminLoginCard">
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">管理者パスワードを入力</p>
+    <input class="admin-pw-input" id="adminPw" type="password" placeholder="パスワード">
+    <button class="btn-submit" onclick="adminLogin()">ログイン</button>
+  </div>
+  <div style="display:none" id="adminPanel">
+    <div class="card" style="overflow-x:auto" id="adminTableWrap"></div>
+    <button class="btn-submit" style="background:linear-gradient(135deg,#C77DFF,#A78BFA);box-shadow:none;margin-top:8px" onclick="adminLogout()">ログアウト</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bot-nav">
+  <button class="bot-btn active" id="nav-home" onclick="switchPage('home')">
+    <span class="bi">🏠</span>ホーム
+  </button>
+  <button class="bot-btn" id="nav-history" onclick="switchPage('history')">
+    <span class="bi">📖</span>きろく
+  </button>
+  <button class="bot-btn" id="nav-admin" onclick="switchPage('admin')">
+    <span class="bi">⚙️</span>管理
+  </button>
+</nav>
+
+<div class="spkl-wrap" id="spklWrap"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════ STATE ══════════ */
+const ADMIN_PW = '19930517';
+
+let S = JSON.parse(localStorage.getItem('oshiAruki')||'null') || {
+  consented:false,
+  charType:'animal',
+  oshiName:'',
+  customImg:null,   // base64
+  totalExp:0,
+  history:[]
+};
+
+/* ══════════ CHAR TABLES ══════════ */
+const CHARS = {
+  animal:[
+    {l:1,n:'たまご',e:'🥚'},{l:2,n:'ひなどり',e:'🐣'},{l:3,n:'こいぬ',e:'🐶'},
+    {l:4,n:'ねこさん',e:'🐱'},{l:5,n:'うさぎ',e:'🐰'},{l:6,n:'きつね',e:'🦊'},
+    {l:7,n:'ぱんだ',e:'🐼'},{l:8,n:'しろくま',e:'🐻‍❄️'},{l:9,n:'ライオン',e:'🦁'},
+    {l:10,n:'ドラゴン',e:'🐉'}
+  ],
+  plant:[
+    {l:1,n:'たね',e:'🫘'},{l:2,n:'めがでた',e:'🌱'},{l:3,n:'めばえ',e:'🌿'},
+    {l:4,n:'わかば',e:'☘️'},{l:5,n:'はな',e:'🌸'},{l:6,n:'ひまわり',e:'🌻'},
+    {l:7,n:'ちゅーりっぷ',e:'🌷'},{l:8,n:'くだもの',e:'🍎'},{l:9,n:'もみじ',e:'🍁'},
+    {l:10,n:'おおきなき',e:'🌳'}
+  ]
+};
+
+/* カスタム用応援コメント（Lvごと） */
+const CUSTOM_CHEERS = [
+  '一緒に歩いてくれてありがとう！これからよろしくね🌸',
+  'また歩いてくれたね！ちょっとだけ成長した気がする💪',
+  'いつも応援してるよ！今日も一日おつかれさま✨',
+  '歩数報告してくれてうれしい！あなたのこと誇りに思う🌟',
+  '毎日続けてるの、すごいよ！！ホントに尊敬する💜',
+  'こんなに育ててくれて…ありがとう、大好き🥹',
+  '一緒に歩いた距離、どのくらいになったんだろうね🗺️',
+  'もう立派だよ。あなたの歩きっぷり、最高！👑',
+  '伝説クラスだね。いつも一緒にいてくれてありがとう🏆',
+  '最強の推しコ…に育ててくれてありがとう。ずっと一緒に歩こうね！🐉✨'
+];
+
+/* ══════════ 数秘術 ══════════ */
+function calcNum(steps){
+  let n=steps;
+  while(n>9){ n=String(n).split('').reduce((a,c)=>a+parseInt(c),0); }
+  return n===0?9:n;
+}
+
+const NUMS = {
+  1:{
+    today:{icon:'🌅',text:'今日は「はじめる」エネルギーが宿ってた日だよ。やろうと思ってたこと、少しでも動き出せた？小さな一歩でも、ちゃんと前に進んでるよ💪'},
+    tomorrow:{icon:'✨',text:'明日は直感を信じて動いてみよう。「なんとなくやりたい」って気持ち、大事にしてみて。きっとうまくいく予感がするよ🌸'}
+  },
+  2:{
+    today:{icon:'🤝',text:'今日は「つながり」を感じやすい日だったね。誰かと話したり、ちょっと気にかけたりできた？そういう小さなやさしさが今日の宝物だよ🌼'},
+    tomorrow:{icon:'💬',text:'明日は対話がカギになりそう。「ちょっと話してもいい？」って声かけてみて。会話の中に、思いがけないヒントが隠れてるかも✨'}
+  },
+  3:{
+    today:{icon:'🌟',text:'今日は「表現」のエネルギーが強かった日。楽しいことや好きなことを周りに伝えられた？あなたの笑顔が今日の場を明るくしてたよ☀️'},
+    tomorrow:{icon:'🎨',text:'明日はひらめきが降ってきやすい日になりそう！「なんとなく思いついた」ことをメモしておいてね。それ、意外とすごいアイデアかもよ💡'}
+  },
+  4:{
+    today:{icon:'🪴',text:'今日は「コツコツ」が光る日だったね。地道にやり続けることって、じつはすごいことなんだよ。ていねいに過ごした今日を褒めてあげて🌿'},
+    tomorrow:{icon:'📋',text:'明日は整理したり、計画を立てたりするといい日になりそう。ちょっとデスク片付けるだけでも気分が変わるよ。ルーティンを大切に🌸'}
+  },
+  5:{
+    today:{icon:'🌬️',text:'今日は「変化」を楽しめた日だったかな。いつもと少し違うことをした？その小さな冒険が、じわじわと運を動かしてくれてるよ🗺️'},
+    tomorrow:{icon:'🎲',text:'明日は予想外のことが起きやすい日かも。「あれ？」ってなること、ラッキーだと思って受け取ってみてね。柔軟さが今日の武器になるよ💫'}
+  },
+  6:{
+    today:{icon:'🏠',text:'今日は「あたたかさ」があふれる日だったよ。誰かに気を配ったり、やさしくしたり。そういうことが今日のあなたをいちばん輝かせてた🌸'},
+    tomorrow:{icon:'💛',text:'明日は「与える」ことで運が回る日になりそう。「おつかれさま」のひとことが誰かの元気になるかもよ。小さなやさしさを大事にしてね🌼'}
+  },
+  7:{
+    today:{icon:'🔭',text:'今日は「じっくり考える」日だったね。立ち止まってゆっくりした時間があったなら、それはすごく意味のある時間だよ。内側が深まった一日✨'},
+    tomorrow:{icon:'📚',text:'明日は「なんで？」って問いかけてみよう。気になってること、調べてみると面白い発見があるかも。知識が宝になる日になりそう💡'}
+  },
+  8:{
+    today:{icon:'💼',text:'今日は「やり切る」力が光った日！何かを仕上げたり、決断したりできた？そのやりきった感、しっかり自分を褒めてあげてね🏆'},
+    tomorrow:{icon:'📈',text:'明日はタイミングよく動くといい日になりそう。「やろうかな」って思ったこと、少しだけ早く動いてみて。流れに乗れる日だよ💨'}
+  },
+  9:{
+    today:{icon:'🌍',text:'今日は「大きな視点」で見られた日かな。目の前のことだけじゃなく、全体の流れを感じ取れた？そんな大らかな一日を過ごせたなら最高だよ🌈'},
+    tomorrow:{icon:'♾️',text:'明日は「手放す」ことが運を開くカギになりそう。「もういいかな」と思ってること、ひとつだけ手放してみて。新しいものが入ってくるよ✨'}
+  }
+};
+
+/* ══════════ EXP / LV ══════════ */
+const EPL=100, MAX_LV=10;
+function expFromSteps(s){
+  if(s<1000) return 2; if(s<3000) return 8; if(s<6000) return 15;
+  if(s<8000) return 25; if(s<10000) return 35; if(s<13000) return 50;
+  if(s<18000) return 70; return 100;
+}
+function getLv(exp){return Math.min(Math.floor(exp/EPL)+1,MAX_LV);}
+function getCharInfo(){
+  const l=getLv(S.totalExp);
+  if(S.charType==='custom') return {l,n:`Lv.${l}`,e:null};
+  return CHARS[S.charType][l-1];
+}
+
+/* ══════════ CONSENT ══════════ */
+function giveConsent(){
+  S.consented=true; save();
+  document.getElementById('consent').style.display='none';
+  showToast('ようこそ！推し歩きへ💜');
+}
+function skipConsent(){
+  document.getElementById('consent').style.display='none';
+  showToast('一部機能が制限されます');
+}
+
+/* ══════════ SUBMIT ══════════ */
+function submit(){
+  if(!S.consented){showToast('先に同意をお願いします');return;}
+  const steps=parseInt(document.getElementById('stepsInput').value)||0;
+  if(steps<0){showToast('正しい歩数を入力してね');return;}
+
+  const num=calcNum(steps);
+  const f=NUMS[num];
+  const gained=expFromSteps(steps);
+  const prevLv=getLv(S.totalExp);
+  S.totalExp+=gained;
+  const newLv=getLv(S.totalExp);
+
+  const now=new Date();
+  const ds=`${now.getMonth()+1}/${now.getDate()}(${['日','月','火','水','木','金','土'][now.getDay()]})`;
+  S.history.push({date:ds,steps,num,numName:f.name,exp:gained});
+  save();
+
+  // cheer text
+  const ci=getCharInfo();
+  const name=S.oshiName||'推しコ';
+  let cheer;
+  if(S.charType==='custom'){
+    cheer=CUSTOM_CHEERS[Math.min(newLv-1,CUSTOM_CHEERS.length-1)];
+  } else {
+    // numerologyベースの応援メッセージ
+    cheer=buildCheer(f,name,steps,gained,newLv,prevLv);
+  }
+  const ct=document.getElementById('cheerText');
+  ct.classList.remove('visible');
+  setTimeout(()=>{ct.textContent=cheer;ct.classList.add('visible');},200);
+
+  // numerology result
+  document.getElementById('resNum').textContent=num;
+  document.getElementById('resName').textContent='頑張ったあなたへ ✦';
+  document.getElementById('resTagline').textContent='今日の歩数から星が読んでくれたよ🔮';
+  const axDiv=document.getElementById('resAxes');
+  axDiv.innerHTML=buildAxesHTML(f);
+  makeFortStars();
+
+  // share text（推しコメイン）
+  document.getElementById('shareText').value=buildShare(steps,num,f,gained,newLv,name,ci);
+  document.getElementById('copyBtn').classList.remove('copied');
+  document.getElementById('copyBtn').textContent='📋 コピーする';
+
+  const nr=document.getElementById('numResult');
+  nr.classList.remove('show');void nr.offsetWidth;nr.classList.add('show');
+  nr.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  if(newLv>prevLv){
+    setTimeout(()=>{
+      launchSparkles();
+      const emojiEl=document.getElementById('oshiEmoji');
+      emojiEl.classList.remove('lv-anim');void emojiEl.offsetWidth;emojiEl.classList.add('lv-anim');
+      showToast(`🎉 Lv.${newLv}にアップ！`);
+    },700);
+  } else {
+    showToast(`✨ 今日の星読み、届いたよ！`);
+  }
+  renderOshi();
+}
+
+function buildCheer(f,name,steps,gained,newLv,prevLv){
+  if(prevLv<newLv) return `やったー！Lv.${newLv}になったよ🎉 ${name}って呼んでくれてありがとう。もっと一緒に歩こうね✨`;
+  const msgs=[
+    `今日も${steps.toLocaleString()}歩、一緒に歩いてくれてありがとう！下に星読みが届いてるよ🔮`,
+    `${steps.toLocaleString()}歩か〜！歩いてくれてうれしいよ💜 下にメッセージがあるから見てみてね🌸`,
+    `おつかれさま！今日もちゃんと歩けたね。下に今日と明日のことが書いてあるよ✨`,
+    `${steps.toLocaleString()}歩、すごいよ！今日はどんな日だったかな？下で確認してみてね🌟`,
+  ];
+  return msgs[Math.floor(Math.random()*msgs.length)];
+}
+
+function buildAxesHTML(f){
+  return `<div class="axis-row">
+    <div class="axis-head">🌸 頑張ったあなたへ — 今日はこんな日だったよ</div>
+    <div class="axis-bubble">${f.today.icon} ${f.today.text}</div>
+  </div>
+  <div class="axis-row" style="margin-top:10px">
+    <div class="axis-head">🔮 明日はどんな日になるかな？</div>
+    <div class="axis-bubble">${f.tomorrow.icon} ${f.tomorrow.text}</div>
+  </div>`;
+}
+
+function buildShare(steps,num,f,gained,lv,name,ci){
+  const lvLabel=S.charType==='custom'?`Lv.${lv}`:`Lv.${lv} ${ci.n}`;
+  return `🌸 推し歩き 本日の報告 🌸
+━━━━━━━━━━━━
+👟 今日の歩数：${steps.toLocaleString()}歩
+💜 ${name}（${lvLabel}）が +${gained}EXP もらったよ！
+#推し歩き #健康経営`;
+}
+
+/* ══════════ OSHI RENDER ══════════ */
+function renderOshi(){
+  const lv=getLv(S.totalExp);
+  const ci=getCharInfo();
+  const expInLv=S.totalExp%EPL;
+  const pct=lv>=MAX_LV?100:(expInLv/EPL)*100;
+
+  // emoji/image
+  const emojiEl=document.getElementById('oshiEmoji');
+  const imgEl=document.getElementById('customImg');
+  const hint=document.getElementById('uploadHint');
+  if(S.charType==='custom'){
+    if(S.customImg){
+      imgEl.src=S.customImg;imgEl.style.display='block';emojiEl.style.display='none';
+    } else {
+      imgEl.style.display='none';emojiEl.style.display='block';emojiEl.textContent='📷';
+    }
+    hint.style.display='flex';
+  } else {
+    imgEl.style.display='none';emojiEl.style.display='block';
+    emojiEl.textContent=ci.e;
+    hint.style.display='none';
+  }
+
+  // badge
+  const labelText=S.charType==='custom'?`Lv.${lv}`:`Lv.${lv} ${ci.n}`;
+  document.getElementById('lvBadge').textContent=labelText;
+  document.getElementById('expFill').style.width=pct+'%';
+  document.getElementById('totalExpNum').textContent=S.totalExp;
+  document.getElementById('expLabel').textContent=lv>=MAX_LV?'MAX！':''+expInLv+' / '+EPL+' EXP';
+  document.getElementById('nextLvLabel').textContent=lv>=MAX_LV?'MAX到達！✨':'次のLvまで: '+(EPL-expInLv);
+
+  if(S.oshiName) document.getElementById('oshiName').value=S.oshiName;
+}
+
+/* ══════════ TYPE / NAME ══════════ */
+function setType(t,el){
+  S.charType=t; save();
+  document.querySelectorAll('.type-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderOshi();
+}
+function updateOshiName(){
+  S.oshiName=document.getElementById('oshiName').value; save();
+}
+
+/* ══════════ CUSTOM IMAGE ══════════ */
+function handleAvatarClick(){
+  if(S.charType==='custom') document.getElementById('imgUpload').click();
+}
+function handleImgUpload(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    S.customImg=ev.target.result; save(); renderOshi();
+    showToast('画像をセットしたよ💜');
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ══════════ HISTORY ══════════ */
+function renderHistory(){
+  const el=document.getElementById('histList');
+  if(!S.history.length){
+    el.innerHTML='<div class="hist-empty">まだ記録なし👣<br>歩数を登録してみよう！</div>';return;
+  }
+  el.innerHTML=[...S.history].reverse().slice(0,30).map(h=>`
+    <div class="hist-item">
+      <div class="hist-num">${h.num}</div>
+      <div style="flex:1">
+        <div class="hist-steps">${h.steps.toLocaleString()} 歩</div>
+        <div class="hist-sub">${h.date} ｜ ${h.numName}</div>
+      </div>
+      <div class="hist-exp">+${h.exp} EXP</div>
+    </div>`).join('');
+}
+function clearAll(){
+  if(!confirm('記録をすべてリセットしますか？')) return;
+  S.history=[];S.totalExp=0; save(); renderOshi(); renderHistory();
+  showToast('リセットしました！');
+}
+
+/* ══════════ ADMIN ══════════ */
+function adminLogin(){
+  if(document.getElementById('adminPw').value!==ADMIN_PW){showToast('パスワードが違います');return;}
+  document.getElementById('adminLoginCard').style.display='none';
+  document.getElementById('adminPanel').style.display='block';
+  const rows=[...S.history].reverse().slice(0,50).map(h=>`
+    <tr><td>${h.date}</td><td>${h.steps.toLocaleString()}</td>
+    <td class="td-num">${h.num}</td><td>${h.numName}</td>
+    <td style="color:var(--mint);font-weight:700">+${h.exp}</td></tr>`).join('');
+  document.getElementById('adminTableWrap').innerHTML=rows?`
+    <table class="admin-table">
+      <thead><tr><th>日付</th><th>歩数</th><th>数秘</th><th>ナンバー</th><th>EXP</th></tr></thead>
+      <tbody>${rows}</tbody></table>`:
+    '<p style="text-align:center;color:var(--muted);padding:20px">データなし</p>';
+}
+function adminLogout(){
+  document.getElementById('adminLoginCard').style.display='block';
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('adminPw').value='';
+}
+
+/* ══════════ UI ══════════ */
+function switchPage(id){
+  ['home','history','admin'].forEach(p=>{
+    document.getElementById('page-'+p).style.display=p===id?'block':'none';
+    document.getElementById('nav-'+p).classList.toggle('active',p===id);
+  });
+  if(id==='history') renderHistory();
+}
+function openHealth(){ window.location.href='x-apple-health://'; setTimeout(()=>showToast('ヘルスケアで歩数を確認してね📱'),1100); }
+function doCopy(){
+  const t=document.getElementById('shareText').value;
+  navigator.clipboard.writeText(t).then(()=>{
+    const b=document.getElementById('copyBtn');b.textContent='✅ コピーしました！';b.classList.add('copied');
+    showToast('チャットワークに貼り付けてね！');
+  }).catch(()=>{document.getElementById('shareText').select();document.execCommand('copy');showToast('コピーしました！');});
+}
+function showToast(m){
+  const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function launchSparkles(){
+  const c=document.getElementById('spklWrap');
+  const es=['✨','💜','🌸','⭐','💫','🎉','🌟'];
+  for(let i=0;i<16;i++){
+    setTimeout(()=>{
+      const s=document.createElement('div');s.className='spkl';
+      s.textContent=es[Math.floor(Math.random()*es.length)];
+      s.style.cssText=`left:${10+Math.random()*80}%;top:${15+Math.random()*65}%;animation-delay:${Math.random()*.4}s`;
+      c.appendChild(s);setTimeout(()=>s.remove(),1800);
+    },i*55);
+  }
+}
+function makeFortStars(){
+  const c=document.getElementById('numStars');c.innerHTML='';
+  for(let i=0;i<20;i++){
+    const d=document.createElement('div');d.className='num-star';
+    const sz=Math.random()*2+.8;
+    d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*3}s;animation-delay:${Math.random()*2}s`;
+    c.appendChild(d);
+  }
+}
+function makeBubbles(){
+  const c=document.getElementById('headerBubbles');
+  for(let i=0;i<8;i++){
+    const d=document.createElement('div');d.className='bubble';
+    const sz=30+Math.random()*80;
+    d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${4+Math.random()*5}s;animation-delay:${Math.random()*3}s`;
+    c.appendChild(d);
+  }
+}
+function save(){ localStorage.setItem('oshiAruki',JSON.stringify(S)); }
+
+/* ══════════ INIT ══════════ */
+makeBubbles();
+renderOshi();
+if(S.consented) document.getElementById('consent').style.display='none';
+// restore type tab
+['animal','plant','custom'].forEach((t,i)=>{
+  if(t===S.charType){
+    document.querySelectorAll('.type-tab').forEach((b,j)=>b.classList.toggle('active',i===j));
+  }
+});
+// restore cheer
+if(S.history.length){
+  const ct=document.getElementById('cheerText');
+  ct.textContent='今日も歩数を報告してね！待ってるよ🌸';
+  ct.classList.add('visible');
+}
+</script>
+</body>
+</html>
